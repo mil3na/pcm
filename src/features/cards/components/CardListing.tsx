@@ -1,6 +1,6 @@
 import { Button, Flex, Grid, Text } from '@radix-ui/themes';
-import type { PokemonTcgCard } from '../types';
-import { Card } from './Card';
+import type { PokemonTcgCard } from '@/features/cards/types';
+import { Card } from '@/features/cards/components/Card';
 
 interface CardListingProps {
     cards: PokemonTcgCard[];

@@ -4,8 +4,8 @@ import type {
     PokemonTcgAttack,
     PokemonTcgCard,
     PokemonTcgValue,
-} from '../types';
-import { FavoriteButton } from './FavoriteButton';
+} from '@/features/cards/types';
+import { FavoriteButton } from '@/features/cards/components/FavoriteButton';
 
 interface CardDetailsProps {
     card: PokemonTcgCard;

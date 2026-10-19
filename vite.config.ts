@@ -7,7 +7,7 @@ export default defineConfig({
     plugins: [tanstackRouter({ target: 'react', autoCodeSplitting: true }), react()],
     resolve: {
         alias: {
-            '@': path.resolve(__dirname, './src'),
+            '@': path.resolve(import.meta.dirname, './src'),
         },
     },
 });

@@ -1,15 +1,15 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import './index.css';
+import '@/index.css';
 import { createRouter, RouterProvider } from '@tanstack/react-router';
-import { routeTree } from './routeTree.gen';
+import { routeTree } from '@/routeTree.gen';
 import '@radix-ui/themes/styles.css';
 import { Theme } from '@radix-ui/themes';
 import { QueryClient } from '@tanstack/react-query';
 import { HTTPError } from 'ky';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
-import { FavoritesProvider } from './features/cards/favorites/FavoritesProvider';
-import { queryCachePersister } from './lib/queryPersister';
+import { FavoritesProvider } from '@/features/cards/favorites/FavoritesProvider';
+import { queryCachePersister } from '@/lib/queryPersister';
 
 const router = createRouter({ routeTree });
 const queryClient = new QueryClient({

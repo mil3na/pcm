@@ -6,7 +6,7 @@ import type {
     PokemonTcgCardsPage,
     PokemonTcgCardsResponse,
     PokemonTcgValuesResponse,
-} from '../types';
+} from '@/features/cards/types';
 
 export const CARDS_PAGE_SIZE = 12;
 const pokemonTcgApi = ky.create({

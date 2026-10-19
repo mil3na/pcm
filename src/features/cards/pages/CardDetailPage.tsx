@@ -2,10 +2,10 @@ import { useQuery } from '@tanstack/react-query';
 import { Link } from '@tanstack/react-router';
 import { useState } from 'react';
 import { Button, Container } from '@radix-ui/themes';
-import { CardDetails } from '../components/CardDetails';
-import { getCard } from '../api/pokemonTcg';
-import { ErrorCallout } from '../../../components/ErrorCallout';
-import { CenteredSpinner } from '../../../components/CenteredSpinner';
+import { CardDetails } from '@/features/cards/components/CardDetails';
+import { getCard } from '@/features/cards/api/pokemonTcg';
+import { ErrorCallout } from '@/components/ErrorCallout';
+import { CenteredSpinner } from '@/components/CenteredSpinner';
 
 const CARD_TABS = ['general', 'attacks', 'weaknesses'] as const;
 type CardTab = (typeof CARD_TABS)[number];

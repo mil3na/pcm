@@ -1,9 +1,9 @@
 import { useQueries } from '@tanstack/react-query';
 import { Button, Card as RadixCard, Container, Flex, Grid, Heading, Text } from '@radix-ui/themes';
-import { Card } from '../components/Card';
-import { getCard } from '../api/pokemonTcg';
-import { useFavorites } from '../favorites/FavoritesContext';
-import { CenteredSpinner } from '../../../components/CenteredSpinner';
+import { Card } from '@/features/cards/components/Card';
+import { getCard } from '@/features/cards/api/pokemonTcg';
+import { useFavorites } from '@/features/cards/favorites/FavoritesContext';
+import { CenteredSpinner } from '@/components/CenteredSpinner';
 
 export function FavoritesPage() {
     const { favoriteIds } = useFavorites();
