@@ -103,6 +103,12 @@ html .radix-themes {
     outline-offset: var(--space-1);
 }
 
+.card-list-image {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
 .card-tile {
     position: relative;
     height: 100%;
@@ -178,6 +184,7 @@ html .radix-themes {
 .card-details-image {
     display: block;
     width: 100%;
+    height: auto;
     max-width: 380px;
     border-radius: var(--radius-5);
     box-shadow: var(--shadow-4);

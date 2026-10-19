@@ -225,6 +225,8 @@ export function CardDetails({ card, tab, onTabChange }: CardDetailsProps) {
                     className="card-details-image"
                     src={card.images.large ?? card.images.small}
                     alt={`${card.name} Pokémon card`}
+                    width={245}
+                    height={342}
                 />
                 <section className="card-details-content">
                     <Tabs.Root
