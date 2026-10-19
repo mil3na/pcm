@@ -15,15 +15,13 @@ export function ErrorCallout({ children, action, className, size = '2' }: ErrorC
             color="red"
             role="alert"
             size={size}
-            className={className}
+            className={`error-callout${className ? ` ${className}` : ''}`}
         >
             <RadixCallout.Icon>
                 <ExclamationTriangleIcon />
             </RadixCallout.Icon>
-            <RadixCallout.Text>
-                {children}
-                {action && <> {action}</>}
-            </RadixCallout.Text>
+            <RadixCallout.Text>{children}</RadixCallout.Text>
+            {action && <div className="error-callout-action">{action}</div>}
         </RadixCallout.Root>
     );
 }

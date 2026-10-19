@@ -1,9 +1,8 @@
 import { useQueries } from '@tanstack/react-query';
-import { Button, Card as RadixCard, Container, Flex, Grid, Heading, Text } from '@radix-ui/themes';
+import { Button, Card as RadixCard, Container, Dialog, Flex, Grid, Heading, Spinner, Text } from '@radix-ui/themes';
 import { Card } from '@/features/cards/components/Card';
 import { getCard } from '@/features/cards/api/pokemonTcg';
 import { useFavorites } from '@/features/cards/favorites/FavoritesContext';
-import { CenteredSpinner } from '@/components/CenteredSpinner';
 
 export function FavoritesPage() {
     const { favoriteIds } = useFavorites();
@@ -18,15 +17,18 @@ export function FavoritesPage() {
     return (
         <Container size="4" py="6">
             <Heading mb="4">Favorite cards</Heading>
-            {favoriteIds.length === 0 && (
-                <Text color="gray">You haven’t added any cards to your favorites yet.</Text>
-            )}
-            {pendingCount > 0 && (
-                <CenteredSpinner
-                    label="Loading favorite cards"
-                    className={favoriteIds.length > pendingCount ? 'centered-spinner-compact' : undefined}
-                />
-            )}
+            <Dialog.Root open={pendingCount > 0}>
+                <Dialog.Content>
+                    <Flex direction="column" align="center" gap="3">
+                        <Spinner size="3" aria-label="Loading" />
+                        <Dialog.Title mb="0">Loading favorite cards</Dialog.Title>
+                        <Dialog.Description align="center">
+                            Please wait while your saved cards are loading.
+                        </Dialog.Description>
+                    </Flex>
+                </Dialog.Content>
+            </Dialog.Root>
+            {favoriteIds.length === 0 && <Text color="gray">You haven’t added any cards to your favorites yet.</Text>}
             {favoriteIds.length > 0 && (
                 <Grid columns={{ initial: '1', sm: '2', md: '3', lg: '4' }} gap="4">
                     {cardQueries.map((query, index) => {
@@ -38,10 +40,7 @@ export function FavoritesPage() {
                             <RadixCard key={cardId} className="favorite-card-placeholder">
                                 <Flex direction="column" align="center" justify="center" gap="3">
                                     <Text align="center">Could not load card {cardId}.</Text>
-                                    <Button
-                                        variant="soft"
-                                        onClick={() => void query.refetch()}
-                                    >
+                                    <Button variant="soft" onClick={() => void query.refetch()}>
                                         Try again
                                     </Button>
                                 </Flex>
