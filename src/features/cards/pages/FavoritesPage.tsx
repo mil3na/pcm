@@ -1,16 +1,13 @@
 import { useQueries } from '@tanstack/react-query';
 import { Button, Card as RadixCard, Container, Dialog, Flex, Grid, Heading, Spinner, Text } from '@radix-ui/themes';
 import { Card } from '@/features/cards/components/Card';
-import { getCard } from '@/features/cards/api/pokemonTcg';
+import { cardQueryOptions } from '@/features/cards/queries';
 import { useFavorites } from '@/features/cards/favorites/FavoritesContext';
 
 export function FavoritesPage() {
     const { favoriteIds } = useFavorites();
     const cardQueries = useQueries({
-        queries: favoriteIds.map((cardId) => ({
-            queryKey: ['card', cardId],
-            queryFn: () => getCard(cardId),
-        })),
+        queries: favoriteIds.map(cardQueryOptions),
     });
     const pendingCount = cardQueries.filter((query) => query.isPending).length;
 

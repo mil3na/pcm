@@ -11,6 +11,8 @@ For routing, TanStack Router was chosen. It is a well known library that will gi
 
 For requests, TanStack Query + KY. One manages cache and state, the other replaces native fetch for better error handling.
 
+zod is used for validating API data schemas.
+
 Google fonts, in particular Fira Code, was used for this project. Improves legibility.
 
 ## Functionalities Implemented
@@ -27,7 +29,7 @@ Google fonts, in particular Fira Code, was used for this project. Improves legib
 - Search functionality
   - Debounce so it does not hit the server so often
   - Using wildcard search so we can search for pieces of the name
-  -
+- Mobile version available
 
 ## Skipped Functionalities
 
@@ -38,3 +40,5 @@ Google fonts, in particular Fira Code, was used for this project. Improves legib
 - Page for sets
 - Improved error messages
 - Random card feature on home screen
+- Better component alignment on mobile
+- Better prices print

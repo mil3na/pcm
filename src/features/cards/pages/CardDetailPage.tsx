@@ -3,23 +3,18 @@ import { Link } from '@tanstack/react-router';
 import { useState } from 'react';
 import { Button, Container } from '@radix-ui/themes';
 import { CardDetails } from '@/features/cards/components/CardDetails';
-import { getCard } from '@/features/cards/api/pokemonTcg';
+import type { CardDetailsTab } from '@/features/cards/components/CardDetails';
+import { cardQueryOptions } from '@/features/cards/queries';
 import { ErrorCallout } from '@/components/ErrorCallout';
 import { CenteredSpinner } from '@/components/CenteredSpinner';
-
-const CARD_TABS = ['general', 'attacks', 'weaknesses'] as const;
-type CardTab = (typeof CARD_TABS)[number];
 
 interface CardDetailPageProps {
     cardId: string;
 }
 
 export function CardDetailPage({ cardId }: CardDetailPageProps) {
-    const [tab, setTab] = useState<CardTab>('general');
-    const cardQuery = useQuery({
-        queryKey: ['card', cardId],
-        queryFn: () => getCard(cardId),
-    });
+    const [tab, setTab] = useState<CardDetailsTab>('general');
+    const cardQuery = useQuery(cardQueryOptions(cardId));
 
     return (
         <Container size="4" py="6">

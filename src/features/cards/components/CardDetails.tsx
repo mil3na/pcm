@@ -9,13 +9,14 @@ import { FavoriteButton } from '@/features/cards/components/FavoriteButton';
 
 interface CardDetailsProps {
     card: PokemonTcgCard;
-    tab: 'general' | 'attacks' | 'weaknesses';
-    onTabChange: (tab: CardDetailsProps['tab']) => void;
+    tab: CardDetailsTab;
+    onTabChange: (tab: CardDetailsTab) => void;
 }
 
-const CARD_TABS = ['general', 'attacks', 'weaknesses'] as const;
+const CARD_TABS = ['general', 'attacks', 'weaknesses', 'prices'] as const;
+export type CardDetailsTab = (typeof CARD_TABS)[number];
 
-function isCardTab(value: string): value is CardDetailsProps['tab'] {
+function isCardTab(value: string): value is CardDetailsTab {
     return CARD_TABS.some((tab) => tab === value);
 }
 
@@ -35,19 +36,6 @@ function InfoRow({ label, value }: { label: string; value?: string }) {
 }
 
 function GeneralInfo({ card }: { card: PokemonTcgCard }) {
-    const marketPrices = (market: PokemonTcgCard['tcgplayer'], currency: string) => {
-        if (!market?.prices) return undefined;
-        return Object.entries(market.prices)
-            .map(([kind, prices]) => {
-                const values = Object.entries(prices)
-                    .filter((entry): entry is [string, number] => entry[1] !== null)
-                    .map(([priceType, price]) => `${priceType}: ${currency}${price.toFixed(2)}`);
-                return values.length ? `${kind} (${values.join(', ')})` : undefined;
-            })
-            .filter(Boolean)
-            .join('; ');
-    };
-
     return (
         <div className="card-info-list">
             <InfoRow label="Card ID" value={card.id} />
@@ -108,23 +96,73 @@ function GeneralInfo({ card }: { card: PokemonTcgCard }) {
             />
             <InfoRow label="Rules" value={card.rules?.join(' ')} />
             <InfoRow label="Flavor text" value={card.flavorText} />
-            <InfoRow label="TCGplayer prices (USD)" value={marketPrices(card.tcgplayer, '$')} />
-            <InfoRow label="TCGplayer prices updated" value={card.tcgplayer?.updatedAt} />
-            <InfoRow
-                label="Cardmarket prices (EUR)"
-                value={marketPrices(card.cardmarket, '€')}
-            />
-            <InfoRow label="Cardmarket prices updated" value={card.cardmarket?.updatedAt} />
-            {card.tcgplayer?.url && (
-                <a href={card.tcgplayer.url} target="_blank" rel="noreferrer">
-                    View on TCGplayer
-                </a>
-            )}
-            {card.cardmarket?.url && (
-                <a href={card.cardmarket.url} target="_blank" rel="noreferrer">
-                    View on Cardmarket
-                </a>
-            )}
+        </div>
+    );
+}
+
+function PriceInfo({ card }: { card: PokemonTcgCard }) {
+    const tcgplayerPrices = card.tcgplayer?.prices
+        ? Object.entries(card.tcgplayer.prices)
+              .map(([kind, prices]) => {
+                  const values = Object.entries(prices)
+                      .filter((entry): entry is [string, number] => entry[1] !== null)
+                      .map(([priceType, price]) => `${priceType}: $${price.toFixed(2)}`);
+                  return values.length ? `${kind} (${values.join(', ')})` : undefined;
+              })
+              .filter(Boolean)
+              .join('; ')
+        : undefined;
+    const cardmarketPrices = card.cardmarket?.prices
+        ? Object.entries(card.cardmarket.prices)
+              .filter((entry): entry is [string, number] => entry[1] !== null)
+              .map(([priceType, price]) => `${priceType}: €${price.toFixed(2)}`)
+              .join(', ')
+        : undefined;
+    const hasPriceInfo = Boolean(
+        tcgplayerPrices ||
+            card.tcgplayer?.updatedAt ||
+            card.tcgplayer?.url ||
+            cardmarketPrices ||
+            card.cardmarket?.updatedAt ||
+            card.cardmarket?.url,
+    );
+
+    if (!hasPriceInfo) return <Text color="gray">No price information available.</Text>;
+
+    return (
+        <div className="card-info-list">
+            <Heading size="3">
+                {card.tcgplayer?.url ? (
+                    <a
+                        className="card-marketplace-link"
+                        href={card.tcgplayer.url}
+                        target="_blank"
+                        rel="noreferrer"
+                    >
+                        TCGplayer (USD)
+                    </a>
+                ) : (
+                    'TCGplayer (USD)'
+                )}
+            </Heading>
+            <InfoRow label="Prices" value={tcgplayerPrices} />
+            <InfoRow label="Updated" value={card.tcgplayer?.updatedAt} />
+            <Heading size="3">
+                {card.cardmarket?.url ? (
+                    <a
+                        className="card-marketplace-link"
+                        href={card.cardmarket.url}
+                        target="_blank"
+                        rel="noreferrer"
+                    >
+                        Cardmarket (EUR)
+                    </a>
+                ) : (
+                    'Cardmarket (EUR)'
+                )}
+            </Heading>
+            <InfoRow label="Prices" value={cardmarketPrices} />
+            <InfoRow label="Updated" value={card.cardmarket?.updatedAt} />
         </div>
     );
 }
@@ -187,6 +225,8 @@ export function CardDetails({ card, tab, onTabChange }: CardDetailsProps) {
                     className="card-details-image"
                     src={card.images.large ?? card.images.small}
                     alt={`${card.name} Pokémon card`}
+                    width={245}
+                    height={342}
                 />
                 <section className="card-details-content">
                     <Tabs.Root
@@ -199,6 +239,7 @@ export function CardDetails({ card, tab, onTabChange }: CardDetailsProps) {
                             <Tabs.Trigger value="general">General info</Tabs.Trigger>
                             <Tabs.Trigger value="attacks">Attacks</Tabs.Trigger>
                             <Tabs.Trigger value="weaknesses">Weaknesses</Tabs.Trigger>
+                            <Tabs.Trigger value="prices">Prices</Tabs.Trigger>
                         </Tabs.List>
                         <Tabs.Content value="general" className="card-detail-panel">
                             <GeneralInfo card={card} />
@@ -230,6 +271,9 @@ export function CardDetails({ card, tab, onTabChange }: CardDetailsProps) {
                                     value={card.convertedRetreatCost?.toString()}
                                 />
                             </div>
+                        </Tabs.Content>
+                        <Tabs.Content value="prices" className="card-detail-panel">
+                            <PriceInfo card={card} />
                         </Tabs.Content>
                     </Tabs.Root>
                 </section>

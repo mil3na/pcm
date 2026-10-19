@@ -21,10 +21,12 @@ export function Card({ card }: CardProps) {
                 aria-label={`View details for ${card.name}`}
             >
                 <img
+                    className="card-list-image"
                     src={card.images.small}
                     alt=""
                     loading="lazy"
-                    style={{ display: 'block', width: '100%' }}
+                    width={245}
+                    height={342}
                 />
                 <Text as="p" mt="2" weight="medium">
                     {card.name}

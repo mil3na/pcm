@@ -14,6 +14,7 @@ export function Sidebar() {
             <nav className="sidebar-nav" aria-label="Main navigation">
                 <Link
                     to="/"
+                    aria-label="Home"
                     activeOptions={{ exact: true }}
                     activeProps={{ className: 'sidebar-link sidebar-link-active' }}
                     inactiveProps={{ className: 'sidebar-link' }}
@@ -24,6 +25,7 @@ export function Sidebar() {
                 <Link
                     to="/cards"
                     search={{ page: 1, type: undefined, rarity: undefined }}
+                    aria-label="Cards"
                     activeOptions={{ exact: true }}
                     activeProps={{ className: 'sidebar-link sidebar-link-active' }}
                     inactiveProps={{ className: 'sidebar-link' }}
@@ -34,6 +36,7 @@ export function Sidebar() {
                 <Link
                     to="/search"
                     search={{ name: undefined, page: 1 }}
+                    aria-label="Search"
                     activeOptions={{ exact: true }}
                     activeProps={{ className: 'sidebar-link sidebar-link-active' }}
                     inactiveProps={{ className: 'sidebar-link' }}
@@ -43,6 +46,7 @@ export function Sidebar() {
                 </Link>
                 <Link
                     to="/favorites"
+                    aria-label="Favorites"
                     activeOptions={{ exact: true }}
                     activeProps={{ className: 'sidebar-link sidebar-link-active' }}
                     inactiveProps={{ className: 'sidebar-link' }}

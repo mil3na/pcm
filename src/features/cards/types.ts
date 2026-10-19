@@ -1,92 +1,146 @@
-export interface PokemonTcgCard {
-    id: string;
-    name: string;
-    supertype?: string;
-    subtypes?: string[];
-    level?: string;
-    hp?: string;
-    types?: string[];
-    evolvesFrom?: string;
-    evolvesTo?: string[];
-    rules?: string[];
-    ancientTrait?: PokemonTcgCardText;
-    abilities?: PokemonTcgAbility[];
-    attacks?: PokemonTcgAttack[];
-    weaknesses?: PokemonTcgValue[];
-    resistances?: PokemonTcgValue[];
-    retreatCost?: string[];
-    convertedRetreatCost?: number;
-    set?: PokemonTcgSet;
-    number?: string;
-    artist?: string;
-    rarity?: string;
-    flavorText?: string;
-    nationalPokedexNumbers?: number[];
-    legalities?: Record<string, string>;
-    regulationMark?: string;
-    images: {
-        small: string;
-        large?: string;
-    };
-    tcgplayer?: PokemonTcgMarket;
-    cardmarket?: PokemonTcgMarket;
-}
+import { z } from 'zod';
 
-export interface PokemonTcgCardText {
-    name: string;
-    text: string;
-}
+const optionalStringSchema = z
+    .string()
+    .nullish()
+    .transform((value) => value ?? undefined);
+const optionalNumberSchema = z
+    .number()
+    .nullish()
+    .transform((value) => value ?? undefined);
+const optionalStringArraySchema = z
+    .array(z.string())
+    .nullish()
+    .transform((value) => value ?? undefined);
+const optionalNumberArraySchema = z
+    .array(z.number())
+    .nullish()
+    .transform((value) => value ?? undefined);
 
-export interface PokemonTcgAbility extends PokemonTcgCardText {
-    type: string;
-}
+export const pokemonTcgCardTextSchema = z.object({
+    name: z.string(),
+    text: z.string(),
+});
 
-export interface PokemonTcgAttack {
-    name: string;
-    cost?: string[];
-    convertedEnergyCost?: number;
-    damage?: string;
-    text?: string;
-}
+export const pokemonTcgAbilitySchema = pokemonTcgCardTextSchema.extend({
+    type: z.string(),
+});
 
-export interface PokemonTcgValue {
-    type: string;
-    value: string;
-}
+export const pokemonTcgAttackSchema = z.object({
+    name: z.string(),
+    cost: optionalStringArraySchema,
+    convertedEnergyCost: optionalNumberSchema,
+    damage: optionalStringSchema,
+    text: optionalStringSchema,
+});
 
-export interface PokemonTcgSet {
-    id: string;
-    name: string;
-    series?: string;
-    releaseDate?: string;
-    total?: number;
-    printedTotal?: number;
-}
+export const pokemonTcgValueSchema = z.object({
+    type: z.string(),
+    value: z.string(),
+});
 
-export interface PokemonTcgMarket {
-    url?: string;
-    updatedAt?: string;
-    prices?: Record<string, Record<string, number | null>>;
-}
+export const pokemonTcgSetSchema = z.object({
+    id: z.string(),
+    name: z.string(),
+    series: optionalStringSchema,
+    releaseDate: optionalStringSchema,
+    total: optionalNumberSchema,
+    printedTotal: optionalNumberSchema,
+});
 
-export interface PokemonTcgCardsResponse {
-    data: PokemonTcgCard[];
-    totalCount: number;
-}
+const pokemonTcgMarketBaseSchema = z.object({
+    url: optionalStringSchema,
+    updatedAt: optionalStringSchema,
+});
 
-export interface PokemonTcgValuesResponse {
-    data: string[];
-}
+export const pokemonTcgTcgplayerSchema = pokemonTcgMarketBaseSchema.extend({
+    prices: z
+        .record(z.string(), z.record(z.string(), z.number().nullable()))
+        .nullish()
+        .transform((value) => value ?? undefined),
+});
 
-export interface PokemonTcgCardResponse {
-    data: PokemonTcgCard;
-}
+export const pokemonTcgCardmarketSchema = pokemonTcgMarketBaseSchema.extend({
+    prices: z
+        .record(z.string(), z.number().nullable())
+        .nullish()
+        .transform((value) => value ?? undefined),
+});
 
-export interface PokemonTcgCardsPage {
+export const pokemonTcgCardSchema = z.object({
+    id: z.string().min(1),
+    name: z.string().min(1),
+    supertype: optionalStringSchema,
+    subtypes: optionalStringArraySchema,
+    level: optionalStringSchema,
+    hp: optionalStringSchema,
+    types: optionalStringArraySchema,
+    evolvesFrom: optionalStringSchema,
+    evolvesTo: optionalStringArraySchema,
+    rules: optionalStringArraySchema,
+    ancientTrait: pokemonTcgCardTextSchema.nullish().transform((value) => value ?? undefined),
+    abilities: z
+        .array(pokemonTcgAbilitySchema)
+        .nullish()
+        .transform((value) => value ?? undefined),
+    attacks: z
+        .array(pokemonTcgAttackSchema)
+        .nullish()
+        .transform((value) => value ?? undefined),
+    weaknesses: z
+        .array(pokemonTcgValueSchema)
+        .nullish()
+        .transform((value) => value ?? undefined),
+    resistances: z
+        .array(pokemonTcgValueSchema)
+        .nullish()
+        .transform((value) => value ?? undefined),
+    retreatCost: optionalStringArraySchema,
+    convertedRetreatCost: optionalNumberSchema,
+    set: pokemonTcgSetSchema.nullish().transform((value) => value ?? undefined),
+    number: optionalStringSchema,
+    artist: optionalStringSchema,
+    rarity: optionalStringSchema,
+    flavorText: optionalStringSchema,
+    nationalPokedexNumbers: optionalNumberArraySchema,
+    legalities: z
+        .record(z.string(), z.string())
+        .nullish()
+        .transform((value) => value ?? undefined),
+    regulationMark: optionalStringSchema,
+    images: z.object({
+        small: z.url(),
+        large: optionalStringSchema,
+    }),
+    tcgplayer: pokemonTcgTcgplayerSchema.nullish().transform((value) => value ?? undefined),
+    cardmarket: pokemonTcgCardmarketSchema.nullish().transform((value) => value ?? undefined),
+});
+
+export const pokemonTcgCardsResponseSchema = z.object({
+    data: z.array(pokemonTcgCardSchema),
+    totalCount: z.number().int().nonnegative(),
+});
+
+export const pokemonTcgValuesResponseSchema = z.object({
+    data: z.array(z.string()),
+});
+
+export const pokemonTcgCardResponseSchema = z.object({
+    data: pokemonTcgCardSchema,
+});
+
+export type PokemonTcgCard = z.infer<typeof pokemonTcgCardSchema>;
+export type PokemonTcgCardText = z.infer<typeof pokemonTcgCardTextSchema>;
+export type PokemonTcgAbility = z.infer<typeof pokemonTcgAbilitySchema>;
+export type PokemonTcgAttack = z.infer<typeof pokemonTcgAttackSchema>;
+export type PokemonTcgValue = z.infer<typeof pokemonTcgValueSchema>;
+export type PokemonTcgSet = z.infer<typeof pokemonTcgSetSchema>;
+export type PokemonTcgTcgplayer = z.infer<typeof pokemonTcgTcgplayerSchema>;
+export type PokemonTcgCardmarket = z.infer<typeof pokemonTcgCardmarketSchema>;
+export type PokemonTcgCardsPage = {
     cards: PokemonTcgCard[];
     totalCount: number;
-}
-
+};
 export interface PokemonTcgCardFilters {
     type?: string;
     rarity?: string;
