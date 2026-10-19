@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { Card as RadixCard, Text } from '@radix-ui/themes';
-import type { PokemonTcgCard } from '../types';
-import { FavoriteButton } from './FavoriteButton';
+import type { PokemonTcgCard } from '@/features/cards/types';
+import { FavoriteButton } from '@/features/cards/components/FavoriteButton';
 
 interface CardProps {
     card: PokemonTcgCard;

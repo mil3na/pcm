@@ -5,7 +5,7 @@ import {
     StarIcon,
 } from '@radix-ui/react-icons';
 import { Link } from '@tanstack/react-router';
-import { BrandingTitle } from './BrandingTitle';
+import { BrandingTitle } from '@/components/sidebar/BrandingTitle';
 
 export function Sidebar() {
     return (

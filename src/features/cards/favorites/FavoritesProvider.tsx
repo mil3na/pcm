@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
-import { ErrorCallout } from '../../../components/ErrorCallout';
-import { FavoritesContext } from './FavoritesContext';
+import { ErrorCallout } from '@/components/ErrorCallout';
+import { FavoritesContext } from '@/features/cards/favorites/FavoritesContext';
 
 const STORAGE_KEY = 'pokemon-tcg-favorite-card-ids';
 

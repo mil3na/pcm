@@ -1,6 +1,6 @@
 import { StarFilledIcon, StarIcon } from '@radix-ui/react-icons';
 import { IconButton } from '@radix-ui/themes';
-import { useFavorites } from '../favorites/FavoritesContext';
+import { useFavorites } from '@/features/cards/favorites/FavoritesContext';
 
 interface FavoriteButtonProps {
     cardId: string;

@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { Button, Container, Heading, Text, TextField } from '@radix-ui/themes';
-import { CardListing } from '../components/CardListing';
-import { CARDS_PAGE_SIZE, searchCardsByName } from '../api/pokemonTcg';
-import { ErrorCallout } from '../../../components/ErrorCallout';
-import { CenteredSpinner } from '../../../components/CenteredSpinner';
+import { CardListing } from '@/features/cards/components/CardListing';
+import { CARDS_PAGE_SIZE, searchCardsByName } from '@/features/cards/api/pokemonTcg';
+import { ErrorCallout } from '@/components/ErrorCallout';
+import { CenteredSpinner } from '@/components/CenteredSpinner';
 
 interface SearchPageProps {
     name?: string;

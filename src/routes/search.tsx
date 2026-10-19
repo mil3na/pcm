@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { useCallback } from 'react';
-import { SearchPage } from '../features/cards/pages/SearchPage';
+import { SearchPage } from '@/features/cards/pages/SearchPage';
 
 function optionalName(value: unknown): string | undefined {
     return typeof value === 'string' && value.trim() ? value.trim() : undefined;

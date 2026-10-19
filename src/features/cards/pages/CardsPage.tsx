@@ -1,15 +1,15 @@
 import { useQuery } from '@tanstack/react-query';
 import { Button, Container, Heading, Text } from '@radix-ui/themes';
-import { CardFilters } from '../components/CardFilters';
-import { CardListing } from '../components/CardListing';
-import { ErrorCallout } from '../../../components/ErrorCallout';
-import { CenteredSpinner } from '../../../components/CenteredSpinner';
+import { CardFilters } from '@/features/cards/components/CardFilters';
+import { CardListing } from '@/features/cards/components/CardListing';
+import { ErrorCallout } from '@/components/ErrorCallout';
+import { CenteredSpinner } from '@/components/CenteredSpinner';
 import {
     CARDS_PAGE_SIZE,
     getCards,
     getRarities,
     getTypes,
-} from '../api/pokemonTcg';
+} from '@/features/cards/api/pokemonTcg';
 
 interface CardsPageProps {
     page: number;
