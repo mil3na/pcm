@@ -1,3 +1,11 @@
+:root {
+    --app-font-family: 'Fira Code', monospace;
+}
+
+html .radix-themes {
+    --default-font-family: var(--app-font-family);
+}
+
 .app-shell {
     display: flex;
     min-height: 100vh;

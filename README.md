@@ -11,6 +11,8 @@ For routing, TanStack Router was chosen. It is a well known library that will gi
 
 For requests, TanStack Query + KY. One manages cache and state, the other replaces native fetch for better error handling.
 
+Google fonts, in particular Fira Code, was used for this project. Improves legibility.
+
 ## Functionalities Implemented
 
 - Browse all cards at `/cards`, with pagination and Pokémon type / rarity filters

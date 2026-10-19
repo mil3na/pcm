@@ -4,12 +4,7 @@ import { CardFilters } from '@/features/cards/components/CardFilters';
 import { CardListing } from '@/features/cards/components/CardListing';
 import { ErrorCallout } from '@/components/ErrorCallout';
 import { CenteredSpinner } from '@/components/CenteredSpinner';
-import {
-    CARDS_PAGE_SIZE,
-    getCards,
-    getRarities,
-    getTypes,
-} from '@/features/cards/api/pokemonTcg';
+import { CARDS_PAGE_SIZE, getCards, getRarities, getTypes } from '@/features/cards/api/pokemonTcg';
 
 interface CardsPageProps {
     page: number;
@@ -19,13 +14,7 @@ interface CardsPageProps {
     onPageChange: (page: number) => void;
 }
 
-export function CardsPage({
-    page,
-    type,
-    rarity,
-    onFiltersChange,
-    onPageChange,
-}: CardsPageProps) {
+export function CardsPage({ page, type, rarity, onFiltersChange, onPageChange }: CardsPageProps) {
     const typesQuery = useQuery({
         queryKey: ['card-types'],
         queryFn: getTypes,
@@ -53,6 +42,10 @@ export function CardsPage({
                 onRarityChange={(nextRarity) => onFiltersChange(type, nextRarity)}
                 onClear={() => onFiltersChange(undefined, undefined)}
             />
+            <Text size="1" color="gray" mb="4" as="p">
+                Filters are only available when API data is successfully loaded. If you see greyed filters, please try
+                again later.
+            </Text>
             {cardsQuery.isPending && <CenteredSpinner label="Loading cards" />}
             {cardsQuery.isError && (
                 <ErrorCallout
@@ -70,10 +63,7 @@ export function CardsPage({
                     <CardListing
                         cards={cardsQuery.data.cards}
                         page={page}
-                        totalPages={Math.max(
-                            1,
-                            Math.ceil(cardsQuery.data.totalCount / CARDS_PAGE_SIZE),
-                        )}
+                        totalPages={Math.max(1, Math.ceil(cardsQuery.data.totalCount / CARDS_PAGE_SIZE))}
                         onPageChange={onPageChange}
                     />
                 ) : (
