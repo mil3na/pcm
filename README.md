@@ -37,3 +37,4 @@ Google fonts, in particular Fira Code, was used for this project. Improves legib
 - Ordering cards when listed
 - Page for sets
 - Improved error messages
+- Random card feature on home screen
