@@ -131,6 +131,27 @@ html .radix-themes {
     max-width: min(480px, calc(100vw - 24px));
 }
 
+.error-callout {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+}
+
+.error-callout > .rt-CalloutIcon {
+    grid-column: 1;
+    grid-row: 1;
+}
+
+.error-callout > .rt-CalloutText {
+    grid-column: 2;
+    grid-row: 1;
+}
+
+.error-callout-action {
+    grid-column: 3;
+    grid-row: 1;
+    justify-self: end;
+}
+
 .favorite-card-placeholder {
     display: flex;
     aspect-ratio: 0.71;

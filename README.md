@@ -23,6 +23,7 @@ Google fonts, in particular Fira Code, was used for this project. Improves legib
   - As the API is very flaky, a way to do individual retries was implemented, so we can show the cards when they are available
 - Error handling
 - Loading handling
+  - On /favorites, it is different than others as it is more error prone
 - Search functionality
   - Debounce so it does not hit the server so often
   - Using wildcard search so we can search for pieces of the name
