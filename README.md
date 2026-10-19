@@ -35,3 +35,4 @@ Google fonts, in particular Fira Code, was used for this project. Improves legib
 - Search fields other than name
 - Ordering cards when listed
 - Page for sets
+- Improved error messages

@@ -150,10 +150,6 @@ html .radix-themes {
     height: calc(5 * var(--space-4));
 }
 
-.centered-spinner-compact {
-    min-height: 12vh;
-}
-
 .card-details-layout {
     display: grid;
     grid-template-columns: minmax(240px, 380px) minmax(0, 1fr);
