@@ -41,3 +41,4 @@ Google fonts, in particular Fira Code, was used for this project. Improves legib
 - Improved error messages
 - Random card feature on home screen
 - Better component alignment on mobile
+- Better prices print

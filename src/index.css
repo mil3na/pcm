@@ -216,6 +216,17 @@ html .radix-themes {
     overflow-wrap: anywhere;
 }
 
+.card-marketplace-link {
+    color: var(--accent-11);
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.card-marketplace-link:hover {
+    color: var(--accent-12);
+    text-decoration: underline;
+}
+
 @media (max-width: 600px) {
     .app-shell {
         flex-direction: column;
