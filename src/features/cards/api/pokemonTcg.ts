@@ -9,6 +9,7 @@ import {
     pokemonTcgCardsResponseSchema,
     pokemonTcgValuesResponseSchema,
 } from '@/features/cards/types';
+import { escapeLuceneSearchTerm } from '@/lib/luceneSearch';
 import { formatZodIssueSummary } from '@/lib/zodErrors';
 import { z } from 'zod';
 
@@ -68,16 +69,6 @@ export async function getCards(
         .json<unknown>();
     const result = parseApiResponse(pokemonTcgCardsResponseSchema, response, 'cards');
     return { cards: result.data, totalCount: result.totalCount };
-}
-
-const luceneSpecialCharacters = new Set('+-&|!(){}[]^"~*?:\\/');
-
-function escapeLuceneSearchTerm(term: string): string {
-    return Array.from(term, (character) =>
-        /\s/u.test(character) || luceneSpecialCharacters.has(character)
-            ? `\\${character}`
-            : character,
-    ).join('');
 }
 
 export async function searchCardsByName(
