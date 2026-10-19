@@ -9,6 +9,7 @@ import {
     pokemonTcgCardsResponseSchema,
     pokemonTcgValuesResponseSchema,
 } from '@/features/cards/types';
+import { formatZodIssueSummary } from '@/lib/zodErrors';
 import { z } from 'zod';
 
 export const CARDS_PAGE_SIZE = 12;
@@ -25,12 +26,10 @@ function parseApiResponse<T extends z.ZodType>(
     const result = schema.safeParse(response);
     if (result.success) return result.data;
 
-    const details = result.error.issues
-        .map((issue) => `${issue.path.join('.') || 'response'}: ${issue.message}`)
-        .join('; ');
-    throw new Error(`Invalid ${endpoint} response from the Pokémon TCG API: ${details}`, {
-        cause: result.error,
-    });
+    throw new Error(
+        `Invalid ${endpoint} response from the Pokémon TCG API (${formatZodIssueSummary(result.error)})`,
+        { cause: result.error },
+    );
 }
 
 async function getValues(endpoint: 'types' | 'rarities'): Promise<string[]> {

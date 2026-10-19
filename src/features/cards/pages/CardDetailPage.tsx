@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Button, Container } from '@radix-ui/themes';
 import { CardDetails } from '@/features/cards/components/CardDetails';
 import type { CardDetailsTab } from '@/features/cards/components/CardDetails';
-import { getCard } from '@/features/cards/api/pokemonTcg';
+import { cardQueryOptions } from '@/features/cards/queries';
 import { ErrorCallout } from '@/components/ErrorCallout';
 import { CenteredSpinner } from '@/components/CenteredSpinner';
 
@@ -14,10 +14,7 @@ interface CardDetailPageProps {
 
 export function CardDetailPage({ cardId }: CardDetailPageProps) {
     const [tab, setTab] = useState<CardDetailsTab>('general');
-    const cardQuery = useQuery({
-        queryKey: ['card', cardId],
-        queryFn: () => getCard(cardId),
-    });
+    const cardQuery = useQuery(cardQueryOptions(cardId));
 
     return (
         <Container size="4" py="6">
