@@ -27,7 +27,7 @@ Google fonts, in particular Fira Code, was used for this project. Improves legib
 - Search functionality
   - Debounce so it does not hit the server so often
   - Using wildcard search so we can search for pieces of the name
-  -
+- Mobile version available
 
 ## Skipped Functionalities
 
@@ -38,3 +38,4 @@ Google fonts, in particular Fira Code, was used for this project. Improves legib
 - Page for sets
 - Improved error messages
 - Random card feature on home screen
+- Better component alignment on mobile

@@ -224,14 +224,35 @@ html .radix-themes {
     .app-sidebar {
         min-height: auto;
         flex: none;
-        gap: var(--space-4);
-        padding: var(--space-4);
+        gap: var(--space-3);
+        padding: var(--space-3);
         border-right: 0;
         border-bottom: 1px solid var(--gray-a5);
     }
 
+    .app-brand {
+        gap: var(--space-2);
+        padding: 0;
+    }
+
+    .app-brand-mark {
+        width: var(--space-5);
+        height: var(--space-5);
+    }
+
     .sidebar-nav {
-        flex-direction: row;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        width: 100%;
+    }
+
+    .sidebar-link {
+        justify-content: center;
+        padding: var(--space-2);
+    }
+
+    .sidebar-link > span {
+        display: none;
     }
 
     .card-details-layout {
