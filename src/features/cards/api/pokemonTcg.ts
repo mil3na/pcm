@@ -2,11 +2,14 @@ import ky from 'ky';
 import type {
     PokemonTcgCard,
     PokemonTcgCardFilters,
-    PokemonTcgCardResponse,
     PokemonTcgCardsPage,
-    PokemonTcgCardsResponse,
-    PokemonTcgValuesResponse,
 } from '@/features/cards/types';
+import {
+    pokemonTcgCardResponseSchema,
+    pokemonTcgCardsResponseSchema,
+    pokemonTcgValuesResponseSchema,
+} from '@/features/cards/types';
+import { z } from 'zod';
 
 export const CARDS_PAGE_SIZE = 12;
 const pokemonTcgApi = ky.create({
@@ -14,12 +17,25 @@ const pokemonTcgApi = ky.create({
     retry: 0,
 });
 
-async function getValues(endpoint: 'types' | 'rarities'): Promise<string[]> {
-    const result = await pokemonTcgApi.get(endpoint).json<PokemonTcgValuesResponse>();
-    if (!Array.isArray(result.data) || !result.data.every((value) => typeof value === 'string')) {
-        throw new Error(`Invalid ${endpoint} response from the Pokémon TCG API`);
-    }
+function parseApiResponse<T extends z.ZodType>(
+    schema: T,
+    response: unknown,
+    endpoint: string,
+): z.output<T> {
+    const result = schema.safeParse(response);
+    if (result.success) return result.data;
 
+    const details = result.error.issues
+        .map((issue) => `${issue.path.join('.') || 'response'}: ${issue.message}`)
+        .join('; ');
+    throw new Error(`Invalid ${endpoint} response from the Pokémon TCG API: ${details}`, {
+        cause: result.error,
+    });
+}
+
+async function getValues(endpoint: 'types' | 'rarities'): Promise<string[]> {
+    const response = await pokemonTcgApi.get(endpoint).json<unknown>();
+    const result = parseApiResponse(pokemonTcgValuesResponseSchema, response, endpoint);
     return result.data;
 }
 
@@ -48,9 +64,10 @@ export async function getCards(
         .join(' ');
     if (query) params.set('q', query);
 
-    const result = await pokemonTcgApi
+    const response = await pokemonTcgApi
         .get('cards', { searchParams: params })
-        .json<PokemonTcgCardsResponse>();
+        .json<unknown>();
+    const result = parseApiResponse(pokemonTcgCardsResponseSchema, response, 'cards');
     return { cards: result.data, totalCount: result.totalCount };
 }
 
@@ -74,15 +91,17 @@ export async function searchCardsByName(
         pageSize: String(CARDS_PAGE_SIZE),
         orderBy: 'name',
     });
-    const result = await pokemonTcgApi
+    const response = await pokemonTcgApi
         .get('cards', { searchParams: params })
-        .json<PokemonTcgCardsResponse>();
+        .json<unknown>();
+    const result = parseApiResponse(pokemonTcgCardsResponseSchema, response, 'card search');
     return { cards: result.data, totalCount: result.totalCount };
 }
 
 export async function getCard(cardId: string): Promise<PokemonTcgCard> {
-    const result = await pokemonTcgApi
+    const response = await pokemonTcgApi
         .get(`cards/${encodeURIComponent(cardId)}`)
-        .json<PokemonTcgCardResponse>();
+        .json<unknown>();
+    const result = parseApiResponse(pokemonTcgCardResponseSchema, response, 'card');
     return result.data;
 }
