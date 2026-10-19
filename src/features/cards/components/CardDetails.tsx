@@ -35,17 +35,24 @@ function InfoRow({ label, value }: { label: string; value?: string }) {
 }
 
 function GeneralInfo({ card }: { card: PokemonTcgCard }) {
-    const marketPrices = (market: PokemonTcgCard['tcgplayer'], currency: string) => {
+    const tcgplayerPrices = (market: PokemonTcgCard['tcgplayer']) => {
         if (!market?.prices) return undefined;
         return Object.entries(market.prices)
             .map(([kind, prices]) => {
                 const values = Object.entries(prices)
                     .filter((entry): entry is [string, number] => entry[1] !== null)
-                    .map(([priceType, price]) => `${priceType}: ${currency}${price.toFixed(2)}`);
+                    .map(([priceType, price]) => `${priceType}: $${price.toFixed(2)}`);
                 return values.length ? `${kind} (${values.join(', ')})` : undefined;
             })
             .filter(Boolean)
             .join('; ');
+    };
+    const cardmarketPrices = (market: PokemonTcgCard['cardmarket']) => {
+        if (!market?.prices) return undefined;
+        return Object.entries(market.prices)
+            .filter((entry): entry is [string, number] => entry[1] !== null)
+            .map(([priceType, price]) => `${priceType}: €${price.toFixed(2)}`)
+            .join(', ');
     };
 
     return (
@@ -108,11 +115,11 @@ function GeneralInfo({ card }: { card: PokemonTcgCard }) {
             />
             <InfoRow label="Rules" value={card.rules?.join(' ')} />
             <InfoRow label="Flavor text" value={card.flavorText} />
-            <InfoRow label="TCGplayer prices (USD)" value={marketPrices(card.tcgplayer, '$')} />
+            <InfoRow label="TCGplayer prices (USD)" value={tcgplayerPrices(card.tcgplayer)} />
             <InfoRow label="TCGplayer prices updated" value={card.tcgplayer?.updatedAt} />
             <InfoRow
                 label="Cardmarket prices (EUR)"
-                value={marketPrices(card.cardmarket, '€')}
+                value={cardmarketPrices(card.cardmarket)}
             />
             <InfoRow label="Cardmarket prices updated" value={card.cardmarket?.updatedAt} />
             {card.tcgplayer?.url && (

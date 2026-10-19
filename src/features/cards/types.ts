@@ -48,11 +48,21 @@ export const pokemonTcgSetSchema = z.object({
     printedTotal: optionalNumberSchema,
 });
 
-export const pokemonTcgMarketSchema = z.object({
+const pokemonTcgMarketBaseSchema = z.object({
     url: optionalStringSchema,
     updatedAt: optionalStringSchema,
+});
+
+export const pokemonTcgTcgplayerSchema = pokemonTcgMarketBaseSchema.extend({
     prices: z
         .record(z.string(), z.record(z.string(), z.number().nullable()))
+        .nullish()
+        .transform((value) => value ?? undefined),
+});
+
+export const pokemonTcgCardmarketSchema = pokemonTcgMarketBaseSchema.extend({
+    prices: z
+        .record(z.string(), z.number().nullable())
         .nullish()
         .transform((value) => value ?? undefined),
 });
@@ -102,8 +112,8 @@ export const pokemonTcgCardSchema = z.object({
         small: z.url(),
         large: optionalStringSchema,
     }),
-    tcgplayer: pokemonTcgMarketSchema.nullish().transform((value) => value ?? undefined),
-    cardmarket: pokemonTcgMarketSchema.nullish().transform((value) => value ?? undefined),
+    tcgplayer: pokemonTcgTcgplayerSchema.nullish().transform((value) => value ?? undefined),
+    cardmarket: pokemonTcgCardmarketSchema.nullish().transform((value) => value ?? undefined),
 });
 
 export const pokemonTcgCardsResponseSchema = z.object({
@@ -125,7 +135,8 @@ export type PokemonTcgAbility = z.infer<typeof pokemonTcgAbilitySchema>;
 export type PokemonTcgAttack = z.infer<typeof pokemonTcgAttackSchema>;
 export type PokemonTcgValue = z.infer<typeof pokemonTcgValueSchema>;
 export type PokemonTcgSet = z.infer<typeof pokemonTcgSetSchema>;
-export type PokemonTcgMarket = z.infer<typeof pokemonTcgMarketSchema>;
+export type PokemonTcgTcgplayer = z.infer<typeof pokemonTcgTcgplayerSchema>;
+export type PokemonTcgCardmarket = z.infer<typeof pokemonTcgCardmarketSchema>;
 export type PokemonTcgCardsPage = {
     cards: PokemonTcgCard[];
     totalCount: number;
