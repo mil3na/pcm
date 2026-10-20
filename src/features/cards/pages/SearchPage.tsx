@@ -3,9 +3,10 @@ import { useEffect, useState } from 'react';
 import { Button, Container, Heading, Text, TextField } from '@radix-ui/themes';
 import { CARDS_PAGE_SIZE, FIRST_PAGE, SEARCH_DEBOUNCE_MS } from '@/constants';
 import { CardListing } from '@/features/cards/components/CardListing';
-import { searchCardsByName } from '@/features/cards/api/pokemonTcg';
+import { searchCardsInCollection } from '@/features/cards/data/cardCollection';
 import { ErrorCallout } from '@/components/ErrorCallout';
 import { CenteredSpinner } from '@/components/CenteredSpinner';
+import { cardCollectionQueryOptions } from '@/features/cards/queries';
 
 interface SearchPageProps {
     name?: string;
@@ -35,11 +36,11 @@ export function SearchPage({ name, page, onSearchChange, onPageChange }: SearchP
         return () => window.clearTimeout(timeout);
     }, [isSearchSettled, normalizedInput, onSearchChange]);
 
-    const searchQuery = useQuery({
-        queryKey: ['card-search', name, page],
-        queryFn: () => searchCardsByName(name ?? '', page),
-        enabled: Boolean(name) && isSearchSettled,
-    });
+    const collectionQuery = useQuery(cardCollectionQueryOptions());
+    const searchPage =
+        name && isSearchSettled && collectionQuery.data
+            ? searchCardsInCollection(collectionQuery.data, name, page)
+            : undefined;
 
     return (
         <Container size="4" py="6">
@@ -52,39 +53,27 @@ export function SearchPage({ name, page, onSearchChange, onPageChange }: SearchP
                 placeholder="Search by card name"
                 value={inputValue}
                 onChange={(event) => setInputValue(event.currentTarget.value)}
-            >
-            </TextField.Root>
-            {!normalizedInput && (
-                <Text color="gray">Enter a card name to search.</Text>
-            )}
-            {normalizedInput && !isSearchSettled && (
-                <CenteredSpinner label="Searching cards" />
-            )}
-            {name && isSearchSettled && searchQuery.isPending && (
-                <CenteredSpinner label="Loading cards" />
-            )}
-            {name && isSearchSettled && searchQuery.isError && (
+            ></TextField.Root>
+            {!normalizedInput && <Text color="gray">Enter a card name to search.</Text>}
+            {normalizedInput && !isSearchSettled && <CenteredSpinner label="Searching cards" />}
+            {name && isSearchSettled && collectionQuery.isPending && <CenteredSpinner label="Loading cards" />}
+            {name && isSearchSettled && collectionQuery.isError && (
                 <ErrorCallout
                     action={
-                        <Button variant="soft" onClick={() => void searchQuery.refetch()}>
+                        <Button variant="soft" onClick={() => void collectionQuery.refetch()}>
                             Try again
                         </Button>
                     }
                 >
-                    Could not search cards: {searchQuery.error.message}
+                    Could not load card collection: {collectionQuery.error.message}
                 </ErrorCallout>
             )}
-            {name &&
-                isSearchSettled &&
-                searchQuery.isSuccess &&
-                (searchQuery.data.cards.length > 0 ? (
+            {searchPage &&
+                (searchPage.cards.length > 0 ? (
                     <CardListing
-                        cards={searchQuery.data.cards}
+                        cards={searchPage.cards}
                         page={page}
-                        totalPages={Math.max(
-                            FIRST_PAGE,
-                            Math.ceil(searchQuery.data.totalCount / CARDS_PAGE_SIZE),
-                        )}
+                        totalPages={Math.max(FIRST_PAGE, Math.ceil(searchPage.totalCount / CARDS_PAGE_SIZE))}
                         onPageChange={onPageChange}
                     />
                 ) : (

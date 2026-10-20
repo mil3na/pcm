@@ -4,8 +4,13 @@ import { CardFilters } from '@/features/cards/components/CardFilters';
 import { CardListing } from '@/features/cards/components/CardListing';
 import { ErrorCallout } from '@/components/ErrorCallout';
 import { CenteredSpinner } from '@/components/CenteredSpinner';
+import {
+    getCardsFromCollection,
+    getRaritiesFromCollection,
+    getTypesFromCollection,
+} from '@/features/cards/data/cardCollection';
+import { cardCollectionQueryOptions } from '@/features/cards/queries';
 import { CARDS_PAGE_SIZE, FIRST_PAGE } from '@/constants';
-import { getCards, getRarities, getTypes } from '@/features/cards/api/pokemonTcg';
 
 interface CardsPageProps {
     page: number;
@@ -16,18 +21,12 @@ interface CardsPageProps {
 }
 
 export function CardsPage({ page, type, rarity, onFiltersChange, onPageChange }: CardsPageProps) {
-    const typesQuery = useQuery({
-        queryKey: ['card-types'],
-        queryFn: getTypes,
-    });
-    const raritiesQuery = useQuery({
-        queryKey: ['card-rarities'],
-        queryFn: getRarities,
-    });
-    const cardsQuery = useQuery({
-        queryKey: ['cards', page, type, rarity],
-        queryFn: () => getCards(page, { type, rarity }),
-    });
+    const collectionQuery = useQuery(cardCollectionQueryOptions());
+    const types = collectionQuery.data ? getTypesFromCollection(collectionQuery.data) : [];
+    const rarities = collectionQuery.data ? getRaritiesFromCollection(collectionQuery.data) : [];
+    const cardsPage = collectionQuery.data
+        ? getCardsFromCollection(collectionQuery.data, page, { type, rarity })
+        : undefined;
 
     return (
         <Container size="4" py="6">
@@ -35,39 +34,35 @@ export function CardsPage({ page, type, rarity, onFiltersChange, onPageChange }:
             <CardFilters
                 type={type}
                 rarity={rarity}
-                types={typesQuery.data ?? []}
-                rarities={raritiesQuery.data ?? []}
-                typesDisabled={typesQuery.isPending || typesQuery.isError}
-                raritiesDisabled={raritiesQuery.isPending || raritiesQuery.isError}
+                types={types}
+                rarities={rarities}
+                typesDisabled={!collectionQuery.isSuccess}
+                raritiesDisabled={!collectionQuery.isSuccess}
                 onTypeChange={(nextType) => onFiltersChange(nextType, rarity)}
                 onRarityChange={(nextRarity) => onFiltersChange(type, nextRarity)}
                 onClear={() => onFiltersChange(undefined, undefined)}
             />
             <Text size="1" color="gray" mb="4" as="p">
-                Filters are only available when API data is successfully loaded. If you see greyed filters, please try
-                again later.
+                Filters are unavailable until the local card collection has loaded.
             </Text>
-            {cardsQuery.isPending && <CenteredSpinner label="Loading cards" />}
-            {cardsQuery.isError && (
+            {collectionQuery.isPending && <CenteredSpinner label="Loading cards" />}
+            {collectionQuery.isError && (
                 <ErrorCallout
                     action={
-                        <Button variant="soft" onClick={() => void cardsQuery.refetch()}>
+                        <Button variant="soft" onClick={() => void collectionQuery.refetch()}>
                             Try again
                         </Button>
                     }
                 >
-                    Could not load cards: {cardsQuery.error.message}
+                    Could not load card collection: {collectionQuery.error.message}
                 </ErrorCallout>
             )}
-            {cardsQuery.isSuccess &&
-                (cardsQuery.data.cards.length > 0 ? (
+            {cardsPage &&
+                (cardsPage.cards.length > 0 ? (
                     <CardListing
-                        cards={cardsQuery.data.cards}
+                        cards={cardsPage.cards}
                         page={page}
-                        totalPages={Math.max(
-                            FIRST_PAGE,
-                            Math.ceil(cardsQuery.data.totalCount / CARDS_PAGE_SIZE),
-                        )}
+                        totalPages={Math.max(FIRST_PAGE, Math.ceil(cardsPage.totalCount / CARDS_PAGE_SIZE))}
                         onPageChange={onPageChange}
                     />
                 ) : (

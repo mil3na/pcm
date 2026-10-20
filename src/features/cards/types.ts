@@ -116,18 +116,7 @@ export const pokemonTcgCardSchema = z.object({
     cardmarket: pokemonTcgCardmarketSchema.nullish().transform((value) => value ?? undefined),
 });
 
-export const pokemonTcgCardsResponseSchema = z.object({
-    data: z.array(pokemonTcgCardSchema),
-    totalCount: z.number().int().nonnegative(),
-});
-
-export const pokemonTcgValuesResponseSchema = z.object({
-    data: z.array(z.string()),
-});
-
-export const pokemonTcgCardResponseSchema = z.object({
-    data: pokemonTcgCardSchema,
-});
+export const pokemonTcgCardCollectionSchema = z.array(pokemonTcgCardSchema);
 
 export type PokemonTcgCard = z.infer<typeof pokemonTcgCardSchema>;
 export type PokemonTcgCardText = z.infer<typeof pokemonTcgCardTextSchema>;

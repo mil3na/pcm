@@ -1,8 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
     pokemonTcgCardSchema,
-    pokemonTcgCardsResponseSchema,
-    pokemonTcgValuesResponseSchema,
+    pokemonTcgCardCollectionSchema,
 } from '@/features/cards/types';
 
 const validCard = {
@@ -30,7 +29,7 @@ const validCard = {
     },
 };
 
-describe('Pokémon TCG response schemas', () => {
+describe('card schemas', () => {
     it('accepts cards with the distinct provider price shapes', () => {
         const result = pokemonTcgCardSchema.parse(validCard);
 
@@ -68,20 +67,11 @@ describe('Pokémon TCG response schemas', () => {
         ).toBe(false);
     });
 
-    it('validates card-list and string-value response envelopes', () => {
-        expect(
-            pokemonTcgCardsResponseSchema.safeParse({
-                data: [validCard],
-                totalCount: 1,
-            }).success,
-        ).toBe(true);
-        expect(pokemonTcgValuesResponseSchema.safeParse({ data: ['Fire'] }).success).toBe(true);
-        expect(
-            pokemonTcgCardsResponseSchema.safeParse({
-                data: [validCard],
-                totalCount: -1,
-            }).success,
-        ).toBe(false);
-        expect(pokemonTcgValuesResponseSchema.safeParse({ data: [1] }).success).toBe(false);
+    it('validates the local collection as an array of cards', () => {
+        expect(pokemonTcgCardCollectionSchema.safeParse([validCard]).success).toBe(true);
+        expect(pokemonTcgCardCollectionSchema.safeParse({ data: [validCard] }).success).toBe(false);
+        expect(pokemonTcgCardCollectionSchema.safeParse([{ ...validCard, id: '' }]).success).toBe(
+            false,
+        );
     });
 });

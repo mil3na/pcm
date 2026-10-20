@@ -1,9 +1,9 @@
 import { queryOptions } from '@tanstack/react-query';
-import { getCard } from '@/features/cards/api/pokemonTcg';
+import { loadCardCollection } from '@/features/cards/data/cardCollection';
 
-export function cardQueryOptions(cardId: string) {
+export function cardCollectionQueryOptions() {
     return queryOptions({
-        queryKey: ['card', cardId],
-        queryFn: () => getCard(cardId),
+        queryKey: ['card-collection'],
+        queryFn: loadCardCollection,
     });
 }
