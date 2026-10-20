@@ -21,6 +21,19 @@ A React application for browsing Pokémon TCG cards, searching by name, viewing 
 
 The interface uses Radix Themes for consistent controls and layout primitives, with an amber accent, a persistent sidebar for the main destinations, and a compact icon-based navigation layout on mobile. Card details are organized into tabs so general information, attacks, weaknesses, and prices are easy to scan. The design is intentionally simple and focused on finding and inspecting cards.
 
+## Code design decisions
+
+- **Components:** UI is split by responsibility. Page components coordinate route inputs, queries, and loading/error/empty states; smaller components such as `Card`, `CardFilters`, and `CardListing` focus on rendering and user interactions. This keeps shared UI reusable without splitting every component into smaller pieces just for line count.
+- **API and helpers:** Pokémon TCG requests and response parsing live in the cards API module, rather than being repeated in pages. Focused helpers handle concerns that can be tested independently, such as URL page parsing, Lucene search-term escaping, Zod error summaries, and favorite storage.
+- **React Query:** Pages use `useQuery` directly for one-off queries, so we avoid custom hooks that would only wrap a single call. When a query is used in multiple places, shared query options keep its key and fetch function together; card detail data, for example, is used by both the detail and Favorites pages. Custom hooks would make sense if query behavior becomes genuinely shared.
+- **Runtime validation:** API responses are checked with Zod before the UI uses them. The app’s TypeScript types are inferred from those schemas, keeping validation and the data model aligned.
+
+## Good to notice
+
+### Why no custom hooks?
+
+Pages use TanStack Query’s `useQuery` directly when a query is only needed in one place. A custom hook for every page would mostly wrap the same call without adding reusable behavior, so we keep things simple and introduce custom hooks when there is logic worth sharing. For queries used in multiple places, query options keep the query key and fetch function together.
+
 ## Functionalities Implemented
 
 - Browse all cards at `/cards`, with pagination and Pokémon type / rarity filters.
@@ -55,6 +68,7 @@ The interface uses Radix Themes for consistent controls and layout primitives, w
 - Better component alignment on mobile.
 - Better prices print / presentation.
 - Better keyboard utilization
+- Improve test coverage
 
 ## Submission
 
