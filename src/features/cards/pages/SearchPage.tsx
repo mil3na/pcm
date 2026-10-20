@@ -1,11 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { Button, Container, Heading, Text, TextField } from '@radix-ui/themes';
+import { CARDS_PAGE_SIZE, FIRST_PAGE, SEARCH_DEBOUNCE_MS } from '@/constants';
 import { CardListing } from '@/features/cards/components/CardListing';
-import {
-    CARDS_PAGE_SIZE,
-    searchCardsInCollection,
-} from '@/features/cards/data/cardCollection';
+import { searchCardsInCollection } from '@/features/cards/data/cardCollection';
 import { ErrorCallout } from '@/components/ErrorCallout';
 import { CenteredSpinner } from '@/components/CenteredSpinner';
 import { cardCollectionQueryOptions } from '@/features/cards/queries';
@@ -33,7 +31,7 @@ export function SearchPage({ name, page, onSearchChange, onPageChange }: SearchP
 
         const timeout = window.setTimeout(() => {
             onSearchChange(normalizedInput || undefined);
-        }, 700);
+        }, SEARCH_DEBOUNCE_MS);
 
         return () => window.clearTimeout(timeout);
     }, [isSearchSettled, normalizedInput, onSearchChange]);
@@ -55,17 +53,10 @@ export function SearchPage({ name, page, onSearchChange, onPageChange }: SearchP
                 placeholder="Search by card name"
                 value={inputValue}
                 onChange={(event) => setInputValue(event.currentTarget.value)}
-            >
-            </TextField.Root>
-            {!normalizedInput && (
-                <Text color="gray">Enter a card name to search.</Text>
-            )}
-            {normalizedInput && !isSearchSettled && (
-                <CenteredSpinner label="Searching cards" />
-            )}
-            {name && isSearchSettled && collectionQuery.isPending && (
-                <CenteredSpinner label="Loading cards" />
-            )}
+            ></TextField.Root>
+            {!normalizedInput && <Text color="gray">Enter a card name to search.</Text>}
+            {normalizedInput && !isSearchSettled && <CenteredSpinner label="Searching cards" />}
+            {name && isSearchSettled && collectionQuery.isPending && <CenteredSpinner label="Loading cards" />}
             {name && isSearchSettled && collectionQuery.isError && (
                 <ErrorCallout
                     action={
@@ -82,10 +73,7 @@ export function SearchPage({ name, page, onSearchChange, onPageChange }: SearchP
                     <CardListing
                         cards={searchPage.cards}
                         page={page}
-                        totalPages={Math.max(
-                            1,
-                            Math.ceil(searchPage.totalCount / CARDS_PAGE_SIZE),
-                        )}
+                        totalPages={Math.max(FIRST_PAGE, Math.ceil(searchPage.totalCount / CARDS_PAGE_SIZE))}
                         onPageChange={onPageChange}
                     />
                 ) : (

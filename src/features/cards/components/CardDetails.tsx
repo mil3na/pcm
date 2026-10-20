@@ -5,6 +5,7 @@ import type {
     PokemonTcgCard,
     PokemonTcgValue,
 } from '@/features/cards/types';
+import { CARD_IMAGE_HEIGHT, CARD_IMAGE_WIDTH } from '@/constants';
 import { FavoriteButton } from '@/features/cards/components/FavoriteButton';
 
 interface CardDetailsProps {
@@ -225,8 +226,8 @@ export function CardDetails({ card, tab, onTabChange }: CardDetailsProps) {
                     className="card-details-image"
                     src={card.images.large ?? card.images.small}
                     alt={`${card.name} Pokémon card`}
-                    width={245}
-                    height={342}
+                    width={CARD_IMAGE_WIDTH}
+                    height={CARD_IMAGE_HEIGHT}
                 />
                 <section className="card-details-content">
                     <Tabs.Root

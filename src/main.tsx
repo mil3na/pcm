@@ -8,12 +8,13 @@ import { Theme } from '@radix-ui/themes';
 import { QueryClient } from '@tanstack/react-query';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { FavoritesProvider } from '@/features/cards/favorites/FavoritesProvider';
+import { QUERY_CACHE_LIFETIME_MS } from '@/constants';
 
 const router = createRouter({ routeTree });
 const queryClient = new QueryClient({
     defaultOptions: {
         queries: {
-            staleTime: 12 * 60 * 60 * 1000,
+            staleTime: QUERY_CACHE_LIFETIME_MS,
             retry: false,
         },
     },

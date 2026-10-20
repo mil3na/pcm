@@ -5,12 +5,12 @@ import { CardListing } from '@/features/cards/components/CardListing';
 import { ErrorCallout } from '@/components/ErrorCallout';
 import { CenteredSpinner } from '@/components/CenteredSpinner';
 import {
-    CARDS_PAGE_SIZE,
     getCardsFromCollection,
     getRaritiesFromCollection,
     getTypesFromCollection,
 } from '@/features/cards/data/cardCollection';
 import { cardCollectionQueryOptions } from '@/features/cards/queries';
+import { CARDS_PAGE_SIZE, FIRST_PAGE } from '@/constants';
 
 interface CardsPageProps {
     page: number;
@@ -23,9 +23,7 @@ interface CardsPageProps {
 export function CardsPage({ page, type, rarity, onFiltersChange, onPageChange }: CardsPageProps) {
     const collectionQuery = useQuery(cardCollectionQueryOptions());
     const types = collectionQuery.data ? getTypesFromCollection(collectionQuery.data) : [];
-    const rarities = collectionQuery.data
-        ? getRaritiesFromCollection(collectionQuery.data)
-        : [];
+    const rarities = collectionQuery.data ? getRaritiesFromCollection(collectionQuery.data) : [];
     const cardsPage = collectionQuery.data
         ? getCardsFromCollection(collectionQuery.data, page, { type, rarity })
         : undefined;
@@ -64,7 +62,7 @@ export function CardsPage({ page, type, rarity, onFiltersChange, onPageChange }:
                     <CardListing
                         cards={cardsPage.cards}
                         page={page}
-                        totalPages={Math.max(1, Math.ceil(cardsPage.totalCount / CARDS_PAGE_SIZE))}
+                        totalPages={Math.max(FIRST_PAGE, Math.ceil(cardsPage.totalCount / CARDS_PAGE_SIZE))}
                         onPageChange={onPageChange}
                     />
                 ) : (
