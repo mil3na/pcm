@@ -1,5 +1,6 @@
 import { Button, Flex, Grid, Text } from '@radix-ui/themes';
 import type { PokemonTcgCard } from '@/features/cards/types';
+import { FIRST_PAGE } from '@/constants';
 import { Card } from '@/features/cards/components/Card';
 
 interface CardListingProps {
@@ -21,7 +22,7 @@ export function CardListing({ cards, page, totalPages, onPageChange }: CardListi
                 <Flex align="center" justify="center" gap="3" mt="5">
                     <Button
                         variant="soft"
-                        disabled={page <= 1}
+                        disabled={page <= FIRST_PAGE}
                         onClick={() => onPageChange(page - 1)}
                     >
                         Previous

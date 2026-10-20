@@ -1,5 +1,6 @@
 import { Link } from '@tanstack/react-router';
 import { Card as RadixCard, Text } from '@radix-ui/themes';
+import { CARD_IMAGE_HEIGHT, CARD_IMAGE_WIDTH } from '@/constants';
 import type { PokemonTcgCard } from '@/features/cards/types';
 import { FavoriteButton } from '@/features/cards/components/FavoriteButton';
 
@@ -25,8 +26,8 @@ export function Card({ card }: CardProps) {
                     src={card.images.small}
                     alt=""
                     loading="lazy"
-                    width={245}
-                    height={342}
+                    width={CARD_IMAGE_WIDTH}
+                    height={CARD_IMAGE_HEIGHT}
                 />
                 <Text as="p" mt="2" weight="medium">
                     {card.name}

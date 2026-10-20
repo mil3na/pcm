@@ -1,6 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { useCallback } from 'react';
 import { SearchPage } from '@/features/cards/pages/SearchPage';
+import { FIRST_PAGE } from '@/constants';
 import { parsePageNumber } from '@/lib/searchParams';
 
 function optionalName(value: unknown): string | undefined {
@@ -21,7 +22,7 @@ function SearchRoute() {
     const onSearchChange = useCallback(
         (nextName: string | undefined) => {
             void navigate({
-                search: { name: nextName, page: 1 },
+                search: { name: nextName, page: FIRST_PAGE },
             });
         },
         [navigate],

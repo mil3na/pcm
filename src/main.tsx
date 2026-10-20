@@ -10,17 +10,24 @@ import { HTTPError } from 'ky';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { FavoritesProvider } from '@/features/cards/favorites/FavoritesProvider';
 import { queryCachePersister } from '@/lib/queryPersister';
+import {
+    API_RETRY_BASE_DELAY_MS,
+    API_RETRY_MAX_DELAY_MS,
+    API_SERVER_ERROR_RETRY_LIMIT,
+    QUERY_CACHE_LIFETIME_MS,
+} from '@/constants';
 
 const router = createRouter({ routeTree });
 const queryClient = new QueryClient({
     defaultOptions: {
         queries: {
-            staleTime: 12 * 60 * 60 * 1000,
+            staleTime: QUERY_CACHE_LIFETIME_MS,
             retry: (failureCount, error) =>
                 error instanceof HTTPError &&
                 error.response.status === 500 &&
-                failureCount < 5,
-            retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30_000),
+                failureCount < API_SERVER_ERROR_RETRY_LIMIT,
+            retryDelay: (attemptIndex) =>
+                Math.min(API_RETRY_BASE_DELAY_MS * 2 ** attemptIndex, API_RETRY_MAX_DELAY_MS),
         },
     },
 });
@@ -39,7 +46,7 @@ createRoot(document.getElementById('root')!).render(
                 client={queryClient}
                 persistOptions={{
                     persister: queryCachePersister,
-                    maxAge: 12 * 60 * 60 * 1000,
+                    maxAge: QUERY_CACHE_LIFETIME_MS,
                     dehydrateOptions: {
                         shouldDehydrateQuery: (query) =>
                             query.state.status === 'success' &&

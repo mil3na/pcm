@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { CardsPage } from '@/features/cards/pages/CardsPage';
+import { FIRST_PAGE } from '@/constants';
 import { parsePageNumber } from '@/lib/searchParams';
 
 function optionalString(value: unknown): string | undefined {
@@ -27,7 +28,7 @@ function CardsIndexRoute() {
             onFiltersChange={(nextType, nextRarity) => {
                 void navigate({
                     search: {
-                        page: 1,
+                        page: FIRST_PAGE,
                         type: nextType,
                         rarity: nextRarity,
                     },

@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Link } from '@tanstack/react-router';
 import { useState } from 'react';
 import { Button, Container } from '@radix-ui/themes';
+import { FIRST_PAGE } from '@/constants';
 import { CardDetails } from '@/features/cards/components/CardDetails';
 import type { CardDetailsTab } from '@/features/cards/components/CardDetails';
 import { cardQueryOptions } from '@/features/cards/queries';
@@ -21,7 +22,7 @@ export function CardDetailPage({ cardId }: CardDetailPageProps) {
             <Button asChild variant="ghost" mb="4">
                 <Link
                     to="/cards"
-                    search={{ page: 1, type: undefined, rarity: undefined }}
+                    search={{ page: FIRST_PAGE, type: undefined, rarity: undefined }}
                 >
                     ← All cards
                 </Link>
