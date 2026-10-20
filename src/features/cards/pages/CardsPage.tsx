@@ -4,7 +4,12 @@ import { CardFilters } from '@/features/cards/components/CardFilters';
 import { CardListing } from '@/features/cards/components/CardListing';
 import { ErrorCallout } from '@/components/ErrorCallout';
 import { CenteredSpinner } from '@/components/CenteredSpinner';
-import { CARDS_PAGE_SIZE, getCards, getRarities, getTypes } from '@/features/cards/api/pokemonTcg';
+import {
+    CARDS_PAGE_SIZE,
+    getCards,
+    getRarities,
+    getTypes,
+} from '@/features/cards/data/cardCollection';
 
 interface CardsPageProps {
     page: number;
@@ -43,14 +48,22 @@ export function CardsPage({ page, type, rarity, onFiltersChange, onPageChange }:
                 onClear={() => onFiltersChange(undefined, undefined)}
             />
             <Text size="1" color="gray" mb="4" as="p">
-                Filters are only available when API data is successfully loaded. If you see greyed filters, please try
-                again later.
+                Filters are unavailable until the local card collection has loaded.
             </Text>
             {cardsQuery.isPending && <CenteredSpinner label="Loading cards" />}
             {cardsQuery.isError && (
                 <ErrorCallout
                     action={
-                        <Button variant="soft" onClick={() => void cardsQuery.refetch()}>
+                        <Button
+                            variant="soft"
+                            onClick={() =>
+                                void Promise.all([
+                                    cardsQuery.refetch(),
+                                    typesQuery.refetch(),
+                                    raritiesQuery.refetch(),
+                                ])
+                            }
+                        >
                             Try again
                         </Button>
                     }
