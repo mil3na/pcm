@@ -34,6 +34,7 @@ The interface uses Radix Themes for consistent controls and layout primitives, w
 - Browse all cards at `/cards`, with pagination and Pokémon type / rarity filters.
 - Card filters, pagination, and search term/page are synchronized with the URL, so views can be bookmarked or shared.
 - Sidebar navigation to Home, Cards, Search, and Favorites.
+- Home page shows how many cards are saved in favorites and links to the Favorites page; the count does not make an API request. Placeholder cards highlight planned favorites-by-type and recently-favorited statistics.
 - Card detail pages at `/cards/:cardId`, with general information, attacks, weaknesses/resistances, and prices.
 - TCGplayer prices in USD and Cardmarket prices in EUR, with links to the corresponding marketplace pages when available.
 - Favorites are kept in LocalStorage so they survive a page refresh.
