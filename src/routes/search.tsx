@@ -37,7 +37,6 @@ function SearchRoute() {
 
     return (
         <SearchPage
-            key={name ?? ''}
             name={name}
             page={page}
             onSearchChange={onSearchChange}
