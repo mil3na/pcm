@@ -8,8 +8,6 @@ import { formatZodIssueSummary } from '@/lib/zodErrors';
 
 export const CARDS_PAGE_SIZE = 12;
 
-let cardCollectionPromise: Promise<PokemonTcgCard[]> | undefined;
-
 export function prepareCardCollection(data: unknown): PokemonTcgCard[] {
     const result = pokemonTcgCardCollectionSchema.safeParse(data);
     if (!result.success) {
@@ -26,7 +24,7 @@ export function prepareCardCollection(data: unknown): PokemonTcgCard[] {
     return [...uniqueCards.values()];
 }
 
-async function loadCardCollection(): Promise<PokemonTcgCard[]> {
+export async function loadCardCollection(): Promise<PokemonTcgCard[]> {
     const response = await fetch(`${import.meta.env.BASE_URL}data/cards.json`);
     if (!response.ok) {
         throw new Error(`Could not load local card collection (HTTP ${response.status})`);
@@ -34,16 +32,6 @@ async function loadCardCollection(): Promise<PokemonTcgCard[]> {
 
     const data: unknown = await response.json();
     return prepareCardCollection(data);
-}
-
-function getCardCollection(): Promise<PokemonTcgCard[]> {
-    if (!cardCollectionPromise) {
-        cardCollectionPromise = loadCardCollection().catch((error: unknown) => {
-            cardCollectionPromise = undefined;
-            throw error;
-        });
-    }
-    return cardCollectionPromise;
 }
 
 export function getTypesFromCollection(cards: PokemonTcgCard[]): string[] {
@@ -99,30 +87,4 @@ export function getCardFromCollection(cards: PokemonTcgCard[], cardId: string): 
     const card = cards.find((item) => item.id === cardId);
     if (!card) throw new Error(`Card "${cardId}" was not found in the local collection`);
     return card;
-}
-
-export async function getTypes(): Promise<string[]> {
-    return getTypesFromCollection(await getCardCollection());
-}
-
-export async function getRarities(): Promise<string[]> {
-    return getRaritiesFromCollection(await getCardCollection());
-}
-
-export async function getCards(
-    page: number,
-    filters: PokemonTcgCardFilters = {},
-): Promise<PokemonTcgCardsPage> {
-    return getCardsFromCollection(await getCardCollection(), page, filters);
-}
-
-export async function searchCardsByName(
-    name: string,
-    page: number,
-): Promise<PokemonTcgCardsPage> {
-    return searchCardsInCollection(await getCardCollection(), name, page);
-}
-
-export async function getCard(cardId: string): Promise<PokemonTcgCard> {
-    return getCardFromCollection(await getCardCollection(), cardId);
 }

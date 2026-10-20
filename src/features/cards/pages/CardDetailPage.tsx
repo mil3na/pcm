@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Button, Container } from '@radix-ui/themes';
 import { CardDetails } from '@/features/cards/components/CardDetails';
 import type { CardDetailsTab } from '@/features/cards/components/CardDetails';
-import { cardQueryOptions } from '@/features/cards/queries';
+import { cardCollectionQueryOptions } from '@/features/cards/queries';
 import { ErrorCallout } from '@/components/ErrorCallout';
 import { CenteredSpinner } from '@/components/CenteredSpinner';
 
@@ -14,7 +14,8 @@ interface CardDetailPageProps {
 
 export function CardDetailPage({ cardId }: CardDetailPageProps) {
     const [tab, setTab] = useState<CardDetailsTab>('general');
-    const cardQuery = useQuery(cardQueryOptions(cardId));
+    const collectionQuery = useQuery(cardCollectionQueryOptions());
+    const card = collectionQuery.data?.find((item) => item.id === cardId);
 
     return (
         <Container size="4" py="6">
@@ -26,20 +27,23 @@ export function CardDetailPage({ cardId }: CardDetailPageProps) {
                     ← All cards
                 </Link>
             </Button>
-            {cardQuery.isPending && <CenteredSpinner label="Loading card" />}
-            {cardQuery.isError && (
+            {collectionQuery.isPending && <CenteredSpinner label="Loading card" />}
+            {collectionQuery.isError && (
                 <ErrorCallout
                     action={
-                        <Button variant="soft" onClick={() => void cardQuery.refetch()}>
+                        <Button variant="soft" onClick={() => void collectionQuery.refetch()}>
                             Try again
                         </Button>
                     }
                 >
-                    Could not load card: {cardQuery.error.message}
+                    Could not load card collection: {collectionQuery.error.message}
                 </ErrorCallout>
             )}
-            {cardQuery.isSuccess && (
-                <CardDetails card={cardQuery.data} tab={tab} onTabChange={setTab} />
+            {collectionQuery.isSuccess && !card && (
+                <ErrorCallout>Card “{cardId}” was not found in the local collection.</ErrorCallout>
+            )}
+            {card && (
+                <CardDetails card={card} tab={tab} onTabChange={setTab} />
             )}
         </Container>
     );

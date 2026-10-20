@@ -29,7 +29,7 @@ const validCard = {
     },
 };
 
-describe('Pokémon TCG response schemas', () => {
+describe('card schemas', () => {
     it('accepts cards with the distinct provider price shapes', () => {
         const result = pokemonTcgCardSchema.parse(validCard);
 
