@@ -4,7 +4,8 @@ import { CardFilters } from '@/features/cards/components/CardFilters';
 import { CardListing } from '@/features/cards/components/CardListing';
 import { ErrorCallout } from '@/components/ErrorCallout';
 import { CenteredSpinner } from '@/components/CenteredSpinner';
-import { CARDS_PAGE_SIZE, getCards, getRarities, getTypes } from '@/features/cards/api/pokemonTcg';
+import { CARDS_PAGE_SIZE, FIRST_PAGE } from '@/constants';
+import { getCards, getRarities, getTypes } from '@/features/cards/api/pokemonTcg';
 
 interface CardsPageProps {
     page: number;
@@ -63,7 +64,10 @@ export function CardsPage({ page, type, rarity, onFiltersChange, onPageChange }:
                     <CardListing
                         cards={cardsQuery.data.cards}
                         page={page}
-                        totalPages={Math.max(1, Math.ceil(cardsQuery.data.totalCount / CARDS_PAGE_SIZE))}
+                        totalPages={Math.max(
+                            FIRST_PAGE,
+                            Math.ceil(cardsQuery.data.totalCount / CARDS_PAGE_SIZE),
+                        )}
                         onPageChange={onPageChange}
                     />
                 ) : (

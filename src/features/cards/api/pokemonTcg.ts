@@ -9,11 +9,11 @@ import {
     pokemonTcgCardsResponseSchema,
     pokemonTcgValuesResponseSchema,
 } from '@/features/cards/types';
+import { CARDS_PAGE_SIZE } from '@/constants';
 import { escapeLuceneSearchTerm } from '@/lib/luceneSearch';
 import { formatZodIssueSummary } from '@/lib/zodErrors';
 import { z } from 'zod';
 
-export const CARDS_PAGE_SIZE = 12;
 const pokemonTcgApi = ky.create({
     prefix: 'https://api.pokemontcg.io/v2/',
     retry: 0,

@@ -5,6 +5,7 @@ import {
     StarIcon,
 } from '@radix-ui/react-icons';
 import { Link } from '@tanstack/react-router';
+import { FIRST_PAGE } from '@/constants';
 import { BrandingTitle } from '@/components/sidebar/BrandingTitle';
 
 export function Sidebar() {
@@ -24,7 +25,7 @@ export function Sidebar() {
                 </Link>
                 <Link
                     to="/cards"
-                    search={{ page: 1, type: undefined, rarity: undefined }}
+                    search={{ page: FIRST_PAGE, type: undefined, rarity: undefined }}
                     aria-label="Cards"
                     activeOptions={{ exact: true }}
                     activeProps={{ className: 'sidebar-link sidebar-link-active' }}
@@ -35,7 +36,7 @@ export function Sidebar() {
                 </Link>
                 <Link
                     to="/search"
-                    search={{ name: undefined, page: 1 }}
+                    search={{ name: undefined, page: FIRST_PAGE }}
                     aria-label="Search"
                     activeOptions={{ exact: true }}
                     activeProps={{ className: 'sidebar-link sidebar-link-active' }}

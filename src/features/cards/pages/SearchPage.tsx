@@ -1,8 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { Button, Container, Heading, Text, TextField } from '@radix-ui/themes';
+import { CARDS_PAGE_SIZE, FIRST_PAGE, SEARCH_DEBOUNCE_MS } from '@/constants';
 import { CardListing } from '@/features/cards/components/CardListing';
-import { CARDS_PAGE_SIZE, searchCardsByName } from '@/features/cards/api/pokemonTcg';
+import { searchCardsByName } from '@/features/cards/api/pokemonTcg';
 import { ErrorCallout } from '@/components/ErrorCallout';
 import { CenteredSpinner } from '@/components/CenteredSpinner';
 
@@ -29,7 +30,7 @@ export function SearchPage({ name, page, onSearchChange, onPageChange }: SearchP
 
         const timeout = window.setTimeout(() => {
             onSearchChange(normalizedInput || undefined);
-        }, 700);
+        }, SEARCH_DEBOUNCE_MS);
 
         return () => window.clearTimeout(timeout);
     }, [isSearchSettled, normalizedInput, onSearchChange]);
@@ -81,7 +82,7 @@ export function SearchPage({ name, page, onSearchChange, onPageChange }: SearchP
                         cards={searchQuery.data.cards}
                         page={page}
                         totalPages={Math.max(
-                            1,
+                            FIRST_PAGE,
                             Math.ceil(searchQuery.data.totalCount / CARDS_PAGE_SIZE),
                         )}
                         onPageChange={onPageChange}
