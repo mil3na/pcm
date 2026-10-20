@@ -15,15 +15,21 @@ interface SearchPageProps {
 
 export function SearchPage({ name, page, onSearchChange, onPageChange }: SearchPageProps) {
     const [inputValue, setInputValue] = useState(name ?? '');
+    const [previousName, setPreviousName] = useState(name);
     const normalizedInput = inputValue.trim();
     const isSearchSettled = normalizedInput === (name ?? '');
+
+    if (name !== previousName) {
+        setPreviousName(name);
+        setInputValue(name ?? '');
+    }
 
     useEffect(() => {
         if (isSearchSettled) return;
 
         const timeout = window.setTimeout(() => {
             onSearchChange(normalizedInput || undefined);
-        }, 300);
+        }, 700);
 
         return () => window.clearTimeout(timeout);
     }, [isSearchSettled, normalizedInput, onSearchChange]);
